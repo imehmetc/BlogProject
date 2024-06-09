@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using BlogProject.Context;
+using BlogProject.StaticMethods;
 
 namespace BlogProject
 {
@@ -15,6 +16,16 @@ namespace BlogProject
             txtUserName.TabIndex = 0;
             txtPassword.TabIndex = 1;
             txtUserName.Focus();
+
+            #region Veritabanında önceden yazılmış şifreleri SHA-256 şifreleme yöntemine çevir.
+            //var users = _context.Users.ToList();
+            //foreach (var item in users)
+            //{
+            //    item.Password = Sha256Hasher.ComputeSha256Hash(item.Password);
+            //    _context.Users.Update(item);
+            //}
+            //_context.SaveChanges(); 
+            #endregion
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -28,7 +39,7 @@ namespace BlogProject
                 return;
             }
 
-            var user = _context.Users.FirstOrDefault(x => x.UserName == userName && x.Password == password);
+            var user = _context.Users.FirstOrDefault(x => x.UserName == userName && x.Password == Sha256Hasher.ComputeSha256Hash(password));
 
             if (user != null)
             {
@@ -45,7 +56,7 @@ namespace BlogProject
         private void lblRegister_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             RegisterForm registerForm = new RegisterForm(_context);
-            registerForm.Show();
+            registerForm.ShowDialog();
             this.Hide();
         }
 

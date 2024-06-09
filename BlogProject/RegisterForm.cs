@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using BlogProject.Context;
 using BlogProject.Entities;
+using BlogProject.StaticMethods;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -68,13 +69,17 @@ namespace BlogProject
             User newUser = new()
             {
                 UserName = userName,
-                Password = password
+                Password = Sha256Hasher.ComputeSha256Hash(password)
             };
 
             _context.Users.Add(newUser);
             _context.SaveChanges();
 
             MessageBox.Show("Registration Successfull");
+
+            LoginForm loginForm = new LoginForm(_context);
+            loginForm.Show();
+            this.Hide();
         }
 
         private void btnExit_Click(object sender, EventArgs e)
